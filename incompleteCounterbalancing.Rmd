@@ -112,14 +112,17 @@ printGroups <- function(groups){
 # Results
 
 ## Sequences
+
 ```{r}
 treatments <- c('5mg', '7mg', '9mg', '11mg', '13mg', '15mg')
 
 printTreatments(treatments, incompleteCounterBalance(length(treatments)))
 ```
 
+## Groups
 
 Each child-participant should be assigned a number. Next table represents to which treatment sequence each participant should be allocated.
+
 ```{r}
 printGroups(randomAssignment(length(treatments), 40))
 ```
