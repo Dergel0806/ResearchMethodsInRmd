@@ -1526,8 +1526,13 @@ div.tocify {
 
 
 <p><strong>Note</strong>: this report is accompanied by “presidents.csv” file, which should be placed in same directory as this file for reproducibility.</p>
+<div id="task" class="section level1">
+<h1><span class="header-section-number">1</span> Task</h1>
+<p>This <a href="https://ethw.org/List_of_Presidents_of_the_Institute_of_Electrical_and_Electronics_Engineers_(IEEE)">list</a> contains the names of the Institute of Electrical and Electronics Engineers (IEEE) presidents from 1963 to present.<br />
+1. Create a sample of size 10 of IEEE presidents using <em>simple random sampling</em> technique and report them in a table. 1. Create a sample of size 10 of IEEE presidents using <em>disproportional stratified sampling</em> technique (10% female, 90% male) and report them in a table.</p>
+</div>
 <div id="initial-actions" class="section level1">
-<h1><span class="header-section-number">1</span> Initial Actions:</h1>
+<h1><span class="header-section-number">2</span> Initial Actions:</h1>
 <ul>
 <li>read csv into dataframe variable</li>
 <li>connect libraries</li>
@@ -1548,18 +1553,18 @@ countFemales &lt;- function(data){
 }</code></pre>
 </div>
 <div id="simple-random-sampling" class="section level1">
-<h1><span class="header-section-number">2</span> Simple Random Sampling</h1>
-<div id="task" class="section level2">
-<h2><span class="header-section-number">2.1</span> Task</h2>
+<h1><span class="header-section-number">3</span> Simple Random Sampling</h1>
+<div id="task-1" class="section level2">
+<h2><span class="header-section-number">3.1</span> Task</h2>
 <p>Create a sample of size 10 of IEEE presidents using <strong><em>simple random sampling</em></strong> technique and report them in a table.</p>
 </div>
 <div id="process" class="section level2">
-<h2><span class="header-section-number">2.2</span> Process</h2>
+<h2><span class="header-section-number">3.2</span> Process</h2>
 <p>For implementing this sampling we have created 10 random integer numbers in a range between 1 and length of our dataset. Each number has an equal probability to appear. For doing this we have used <code>sample()</code> function.</p>
 <pre class="r"><code>sample1 &lt;- d[sample(nrow(d), 10), ]</code></pre>
 </div>
 <div id="obtained-sample" class="section level2">
-<h2><span class="header-section-number">2.3</span> Obtained Sample:</h2>
+<h2><span class="header-section-number">3.3</span> Obtained Sample:</h2>
 <pre class="r"><code>sample1 %&gt;%
   mutate(Sex = cell_spec(Sex, color = &quot;white&quot;, bold = T, 
                              background = ifelse(as.character(sample1$Sex==&#39;F&#39;), &#39;red&#39;, &#39;blue&#39;))) %&gt;%
@@ -1731,23 +1736,23 @@ co-founded and was president of Viking Instruments Company. He later supervised 
 </table>
 </div>
 <div id="number-of-presidents" class="section level2">
-<h2><span class="header-section-number">2.4</span> Number of presidents</h2>
+<h2><span class="header-section-number">3.4</span> Number of presidents</h2>
 <p>We have <strong><em>0</em></strong> female presidents in this sample!</p>
 </div>
 <div id="is-this-epsem" class="section level2">
-<h2><span class="header-section-number">2.5</span> Is this EPSEM?</h2>
+<h2><span class="header-section-number">3.5</span> Is this EPSEM?</h2>
 <p>This sampling <strong>is EPSEM</strong>, since everyone got equal chances to appear in a sample.</p>
 <p>The chance for each person to get into a sample is: <span class="math display">\[\frac{1}{size(dataset)} * size(sample) = \frac{10}{56} \approx 0.17857\]</span></p>
 </div>
 </div>
 <div id="disproportional-stratified-sampling" class="section level1">
-<h1><span class="header-section-number">3</span> Disproportional Stratified Sampling</h1>
-<div id="task-1" class="section level2">
-<h2><span class="header-section-number">3.1</span> Task</h2>
+<h1><span class="header-section-number">4</span> Disproportional Stratified Sampling</h1>
+<div id="task-2" class="section level2">
+<h2><span class="header-section-number">4.1</span> Task</h2>
 <p>Create a sample of size 10 of IEEE presidents using <strong><em>disproportional stratified sampling</em></strong> technique (10% female, 90% male) and report them in a table.</p>
 </div>
 <div id="process-1" class="section level2">
-<h2><span class="header-section-number">3.2</span> Process</h2>
+<h2><span class="header-section-number">4.2</span> Process</h2>
 <p>For creating this sample, we created separated subsets (stratas) for males and females. After this we sampled each of the subsets separatly, with the lengths of corresponding samples 1 for females and 9 for males (10% and 90% of total sample length 10). Finally, we utilized <code>rbind()</code> function to combine randomly selected people from each of the stratas into one sample. This sample will be the one, that we are looking for.</p>
 <pre class="r"><code>females &lt;- d[d$Sex==&#39;F&#39;,]
 males &lt;- d[d$Sex==&#39;M&#39;,]
@@ -1756,7 +1761,7 @@ sam_mal &lt;- males[sample(nrow(males),9),]
 sample2 &lt;- rbind(sam_fem,sam_mal) </code></pre>
 </div>
 <div id="obtained-sample-1" class="section level2">
-<h2><span class="header-section-number">3.3</span> Obtained Sample:</h2>
+<h2><span class="header-section-number">4.3</span> Obtained Sample:</h2>
 <pre class="r"><code>sample2 %&gt;%
   mutate(Sex = cell_spec(Sex, color = &quot;white&quot;, bold = T, 
                              background = ifelse(as.character(sample2$Sex==&#39;M&#39;), &#39;blue&#39;, &#39;red&#39;))) %&gt;%
@@ -1928,11 +1933,11 @@ worked for IBM for forty-five years, and retired from the company’s research d
 </table>
 </div>
 <div id="number-of-presidents-1" class="section level2">
-<h2><span class="header-section-number">3.4</span> Number of presidents</h2>
+<h2><span class="header-section-number">4.4</span> Number of presidents</h2>
 <p>We have <strong><em>1 </em></strong> female presidents in this sample! Which will be always true, since we have used startified sampling.</p>
 </div>
 <div id="is-this-epsem-1" class="section level2">
-<h2><span class="header-section-number">3.5</span> Is this EPSEM?</h2>
+<h2><span class="header-section-number">4.5</span> Is this EPSEM?</h2>
 <p>This method <strong>is not EPSEM</strong> because everyone does not have equal probability of selection into the sample. We utilize dispropotional sampling method forn this case to minimize the chance that small group of women might be missed out.</p>
 <p>The chance for each man to get into a sample is: <span class="math display">\[\frac{1}{size(strata(Male))} * 0.9 * size(sample) = \frac{9}{53} \approx 0.1698\]</span></p>
 <p>The chance for each woman to get into a sample is: <span class="math display">\[\frac{1}{size(strata(Female))} * 0.1 * size(sample) = \frac{1}{3} \approx 0.33333\]</span> As it can be seen, for men and women chances are different, so this is not EPSEM.</p>
