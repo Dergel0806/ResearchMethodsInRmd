@@ -1,0 +1,83 @@
+---
+title: "Proportional Stratified Sampling"
+author: "Ihor Markevych"
+date: "9/21/2019"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: 
+      collapsed: FALSE
+    number_sections: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(kableExtra)
+
+set.seed(2017)
+
+d <- read.csv('studentNames.csv')
+
+
+
+sampleLength <- 10
+```
+
+# Process and Questions
+
+## Process explanation
+
+To perform proportional stratified sampling we should firstly find proportions of sophomores and freshmans in our dataset. To do so, we'll count number of rows in a corresponding subsets (stratas). We'll later use these numbers to find proportions.
+  
+```{r}
+
+fresh <- d[d$Status == "Freshman",]
+soph <- d[d$Status == "Sophomore",]
+
+
+freshCount <- nrow(fresh)
+sophCount <- nrow(soph)
+totalCount <- nrow(d)
+```
+
+Now, we want to create two samples from each of the stratas with corresponding number of elements (proportional to their length to total dataset length). After this we want to combine them into one sample. This sample will be the one that we are looking for.
+  
+```{r}  
+samFresh <- fresh[sample(nrow(fresh), sampleLength * freshCount / totalCount),]
+samSoph <- soph[sample(nrow(soph), sampleLength * sophCount / totalCount),]
+finSample <- rbind(samFresh,samSoph)
+```
+
+
+## Number of Freshmans and Sophomores in a Dataset
+
+***Number of freshmans is `r freshCount`.***  
+***Number of sophomores is `r sophCount`.***  
+(total length of dataset is `r totalCount`).
+
+## Number of Freshmans and Sophomores in a Sample
+
+***Number of freshmans is `r nrow(finSample[finSample$Status=='Freshman',])`.***  
+***Number of sophomores is `r nrow(finSample[finSample$Status=='Sophomore',])`.***  
+(total length of sample is `r nrow(finSample)`).
+
+## Is this sampling EPSEM?
+
+Yes, it is. Proportional stratified sampling is an EPSEM, because each individual has an equal chance of being included in the final sample. This is true because we are using proportional sampling.  
+Probability for each individual to be included is:
+$$\frac{1}{size(strata)} * \frac{size(strata)}{size(sample)} = \frac{1}{size(sample)}$$
+As we can see, final probability does not include strata size, so, each individual has same probability to be included in a final sample.
+
+# Obtained Sample
+
+```{r}
+finSample %>%
+  kable(format = 'html', 
+        caption = 'Proportional stratified sample of Sophomores and Freshmans', 
+        escape = F, row.names = F) %>%
+  kable_styling(font = 12, full_width = T, c("striped","bordered")) %>%
+  row_spec(0, bold = T) %>%
+  row_spec(which(finSample$Status=='Sophomore'), bold = T, color = "white", background = "blue")
+```
