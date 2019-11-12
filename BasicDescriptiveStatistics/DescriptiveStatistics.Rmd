@@ -1,0 +1,299 @@
+---
+title: "Descriptive Statistics"
+author: "Ihor Markevych"
+date: "11/11/2019"
+output:
+  html_document: 
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+
+# Read data
+
+The file Beatles.csv presents information on the 12 studio albums by The Beatles. Specifically, it gives the lengths, in seconds, of the songs, by album: Please Please Me (PPM), With The Beatles (WTB), A Hard Day’s Night (HDN), Beatles for Sale (BFS), Help! (HLP), Rubber Soul (RBS), Revolver (RVR), Sgt. Pepper’s Lonely Hearts Club Band (SPL), The Beatles (TBS), Yellow Submarine (YSB), Abbey Road (ABR), and Let It Be (LIB). The albums are ordered by release date (i.e. PPM was the first album released, WTB was the second album released, etc.). The song-lengths are arranged for each album in increasing order.
+
+```{r}
+d <- read.csv('Beatles.csv')
+d
+```
+
+# Functions
+
+## Create barchart
+
+```{r}
+plotBarChart <- function(d, 
+                         title = rownames(d)[1], 
+                         yLab = 'seconds', 
+                         xLab = 'Album'){
+  title <- title
+  rownames(d) <- 'value'
+  d <- data.frame(t(d))
+  ggplot(d, aes(x = rownames(d), y = value)) + 
+    theme_bw() + 
+    theme(panel.grid.major.x = element_blank(), 
+          panel.grid.minor = element_blank(), 
+          plot.title = element_text(hjust = 0.5), 
+          panel.border = element_blank()) +
+    labs(title = title) +
+    xlab(xLab) +
+    ylab(yLab) +
+    geom_col(fill='lightgrey', color='black')
+}
+```
+
+
+# Descriptive Statistics
+
+## Median song length
+
+### Values
+
+Determine the median song length of each album.
+
+```{r}
+medians <- data.frame(t(apply(d, 2, median, na.rm = TRUE)))
+rownames(medians) <- 'Median_Song_Length'
+medians
+```
+
+### Chart
+
+Construct a bar graph with album name on the horizontal axis and median song length on the vertical axis.
+
+```{r}
+plotBarChart(medians)
+```
+
+### Interpretation
+
+Interpret your graph, keeping in mind that the albums are ordered by release date.  
+  
+As it can be seen, most of the albums had approximately same median song length (except for LIB and YSB which have bigger values).  
+
+
+## Range of song lengths
+
+### Values
+Determine the range of song lengths for each album.
+
+```{r}
+ranges <- data.frame(t(apply(d, 2, 
+                           function(x) 
+                             range(x, na.rm = TRUE)[2] - 
+                             range(x, na.rm = TRUE)[1])))
+rownames(ranges) <- 'Range_of_Song_Length'
+ranges
+```
+
+### Chart
+
+Construct a bar graph with album name on the horizontal axis and median song length on the vertical axis.
+
+```{r}
+plotBarChart(ranges)
+```
+
+### Interpretation
+
+Interpret your graph, keeping in mind that the albums are ordered by release date.  
+  
+It can be seen that first one, last and SPL and TBS albums had much greater range of song lengths compared to other albums. LIB also stands out a bit.  
+In terms of time evolution we may assume that Beatles started from very ranged songs, but went down to smaller range of length. In the end they increased range of their songs again.
+
+## Quartiles of song length
+
+Find the quartiles of song length for each album.
+
+### Built-in quartiles
+
+```{r}
+builtQuartiles <- data.frame(apply(d, 2, quantile, na.rm = TRUE))
+builtQuartiles
+```
+
+### Custom quartiles
+
+```{r}
+getQuartiles <- function(d){
+  d <- d[!is.na(d)]
+  c(d[ceiling(length(d) / 4)],
+       d[ceiling(length(d) / 2)],
+       d[ceiling(length(d) * 3 / 4)]
+       )
+}
+
+quartiles <- data.frame(apply(d, 2, getQuartiles))
+rownames(quartiles) <- c('Q1', 'Q2', 'Q3')
+quartiles
+```
+
+### Groups of quartiles
+
+```{r}
+getQuartilesGroups <- function(d){
+  d <- d[!is.na(d)]
+  res <- data.frame(
+      d[1 : ceiling(length(d) / 4)],
+      d[(floor(length(d) / 4) + 1) : ceiling(length(d) / 2)],
+      d[(floor(length(d) / 2) + 1) : ceiling(length(d) * 3 / 4)]
+    )
+  colnames(res) <- c('Q1', 'Q2', 'Q3')
+  res
+}
+
+for(col in colnames(d)){
+  cat(col, '\n')
+  print(getQuartilesGroups(d[, col]))
+  cat('=====================\n')
+}
+
+```
+
+## Interquartile Range (IQR)
+
+### Values
+
+Determine the IQR of song lengths for each album.
+
+```{r}
+IQR <- quartiles['Q3',] - quartiles['Q1',]
+rownames(IQR) <- 'IQR'
+IQR
+```
+
+### Chart
+
+Construct a bar graph with album name on the horizontal axis and IQR of song lengths on the vertical axis.
+
+```{r}
+plotBarChart(IQR)
+```
+
+### Interpretation
+
+Interpret your graph, keeping in mind that the albums are ordered by release date.  
+  
+As in range case, first one, last and SPL, LIB and TBS albums had much greater IQR of song lengths compared to other albums.
+Since IQR is also connected to range, our previous assumption is corroborated (in terms of time evolution we may assume that Beatles started from very ranged songs, but went down to smaller range of length, in the end they increased range of their songs again)  
+
+##  Lower and upper limits
+
+### Values
+
+```{r}
+limits <- rbind(quartiles['Q1',] - 1.5 * IQR, quartiles['Q3',] + 1.5 * IQR)
+rownames(limits) <- c('Lower_Limit', 'Upper_Limit')
+limits
+```
+
+### Outliers
+
+#### Logical matrix
+
+```{r}
+
+outliers <- data.frame(mapply(function(x, l) x < l, d, limits['Lower_Limit',])) | 
+  data.frame(mapply(function(x, l) x > l, d, limits['Upper_Limit',]))
+```
+
+#### Values
+
+```{r}
+outliersValues <- d[outliers]
+outliersValues <- outliersValues[!is.na(outliersValues)]
+outliersByAlbum <- list()
+for(value in outliersValues){
+  outliersByAlbum[[colnames(d)[apply(d, 2, function(x) value %in% x)]]] <- c(outliersByAlbum[[colnames(d)[apply(d, 2, function(x) value %in% x)]]], value) 
+}
+
+for (album in attributes(outliersByAlbum)$names){
+  cat('Album', album, 'contains next potential outliers:', paste0(paste0(outliersByAlbum[[album]], collapse = ', '), '.\n'))
+}
+
+```
+
+
+#### Albums with outliers
+
+Next albums contain potential outliers:
+
+```{r}
+colnames(d)[which(apply(outliers, 2, any))]
+```
+
+## Plots and outliers
+
+### Boxplot with `ggplot`
+
+For each album, construct a boxplot of the song lengths, and interpret your results in terms of the variation of the song lengths. Are the outliers the same as what you determined in previous part?
+
+```{r warning=FALSE}
+ggplot(stack(d), aes(x = ind, y = values)) +
+  theme_bw() + 
+  theme(panel.grid.major.x = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        panel.border = element_blank()) +
+  labs(title = 'Boxplot of songs lengths by albums') +
+  xlab('Album') +
+  ylab('seconds') +
+  geom_boxplot()
+```
+
+### Outliers with `boxplot()`
+
+Whiskers extend to the most extreme data point which is no more than `coef` times the length of the box away from the box.
+
+```{r}
+boxplot(stack(d)$values ~ stack(d)$ind, las=2)
+
+for (col in colnames(d)){
+  outs <- boxplot.stats(d[, col], coef = 1.5)$out
+  if (length(outs > 0)){
+    print(outs)  
+  }
+}
+```
+
+#### Outliers comparison
+
+Most of the outliers with `ggplot` are same, except for LIB one, which, as it can be seen, is very close to lower limit. This is explained by the fact that IQR is calculated from slightly different quartiles (weighted).  
+For `boxplot()` outliers are same.
+
+### Violin plot
+
+```{r warning=FALSE}
+ggplot(stack(d), aes(x = ind, y = values, fill = ind)) +  
+  theme_bw() + 
+  theme(panel.grid.major.x = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        panel.border = element_blank(), 
+        legend.position = "none") +
+  labs(title = 'Density of songs lengths by albums') +
+  xlab('Album') +
+  ylab('seconds') +
+  geom_violin()
+```
+
+### Combined
+
+```{r warning=FALSE}
+ggplot(stack(d), aes(x = ind, y = values)) + 
+  theme_bw() + 
+  theme(panel.grid.major.x = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        panel.border = element_blank()) +
+  labs(title = 'Boxplot of songs lengths by albums') +
+  xlab('Album') +
+  ylab('seconds') +
+  geom_violin(color = 'red') +
+  geom_boxplot(width = 0.1, fill = 'lightblue')
+```
