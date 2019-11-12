@@ -9,3 +9,7 @@ parents of 40 children with attention deficit disorder have volunteered their ch
 You know that using this procedure might result in either carryover or order effects, so you want to
 counterbalance the order of presentation of the six dosages. Construct the different counterbalanced order of
 treatment conditions using the incomplete counterbalancing technique in r markdown.
+
+## BasicDescriptiveStatistics
+
+Basic descriptive statistics in Rmd.
