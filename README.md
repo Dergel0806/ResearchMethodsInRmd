@@ -13,3 +13,15 @@ treatment conditions using the incomplete counterbalancing technique in r markdo
 ## BasicDescriptiveStatistics
 
 Basic descriptive statistics in Rmd.
+
+## ProportionalStratifiedSampling
+
+Use the data in file “studentsNames.csv” to create a sample of size 10 of
+freshmen and sophomores using proportional stratified sampling and report them in a table. Make sure
+to set the seed to 2017.  
+  
+1. Explain your process/code briefly.
+1. How many freshmen and sophomores are in the data set?
+1. How many freshmen and sophomores are in your sample?
+1. Is this method EPSEM? Why or why not?
+
