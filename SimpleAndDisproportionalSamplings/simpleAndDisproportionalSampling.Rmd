@@ -1,0 +1,116 @@
+---
+title: "Simple and Disproportional Samplings"
+author: "Ihor Markevych"
+date: "9/16/2019"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: 
+      collapsed: FALSE
+    number_sections: TRUE
+---
+
+**Note**: this report is accompanied by "presidents.csv" file, which should be placed in same directory as this file for reproducibility.
+
+# Initial Actions:
+- read csv into dataframe variable
+- connect libraries
+- set seed for pseudorandom numbers generation 
+- create a function to count females in a parameter dataset.
+
+```{r setup, include=TRUE, results='hide',message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(kableExtra)
+
+set.seed(2017)
+
+d <- read.csv('presidents.csv')
+
+countFemales <- function(data){
+  length(which(data[,'Sex']=='F'))
+}
+```
+
+# Simple Random Sampling
+
+## Task
+
+Create a sample of size 10 of IEEE presidents using ***simple random sampling*** technique and report
+them in a table.
+
+## Process
+
+For implementing this sampling we have created 10 random integer numbers in a range between 1 and length of our dataset. Each number has an equal probability to appear. For doing this we have used `sample()` function.
+
+```{r}
+sample1 <- d[sample(nrow(d), 10), ]
+```
+## Obtained Sample:
+
+```{r}
+sample1 %>%
+  mutate(Sex = cell_spec(Sex, color = "white", bold = T, 
+                             background = ifelse(as.character(sample1$Sex=='F'), 'red', 'blue'))) %>%
+  kable(format = 'html', caption = 'Sample 1 IEEE Presidents Data', escape = F) %>%
+  kable_styling(font = 12, full_width = T, c("striped","bordered")) %>%
+  row_spec(0, bold = T)
+```
+
+## Number of presidents
+
+We have ***`r countFemales(sample1)`*** female presidents in this sample!
+
+## Is this EPSEM?
+
+This sampling **is EPSEM**, since everyone got equal chances to appear in a sample.
+
+The chance for each person to get into a sample is:
+$$\frac{1}{size(dataset)} * size(sample) = \frac{10}{56} \approx 0.17857$$
+
+# Disproportional Stratified Sampling
+
+## Task
+
+Create a sample of size 10 of IEEE presidents using ***disproportional stratified sampling*** technique
+(10% female, 90% male) and report them in a table.
+
+## Process
+
+For creating this sample, we created separated subsets (stratas) for males and females. After this we sampled each of the subsets separatly, with the lengths of corresponding samples 1 for females and 9 for males (10% and 90% of total sample length 10). Finally, we utilized `rbind()` function to combine randomly selected people from each of the stratas into one sample. This sample will be the one, that we are looking for.
+
+```{r}
+females <- d[d$Sex=='F',]
+males <- d[d$Sex=='M',]
+sam_fem <- females[sample(nrow(females),1),]
+sam_mal <- males[sample(nrow(males),9),]
+sample2 <- rbind(sam_fem,sam_mal) 
+```
+
+## Obtained Sample:
+
+```{r}
+sample2 %>%
+  mutate(Sex = cell_spec(Sex, color = "white", bold = T, 
+                             background = ifelse(as.character(sample2$Sex=='M'), 'blue', 'red'))) %>%
+  kable(format = 'html', caption = 'Sample 2 IEEE Presidents Data', escape = F) %>%
+  kable_styling(font = 12, full_width = T, c("striped","bordered")) %>%
+  row_spec(0, bold = T)
+
+```
+
+## Number of presidents
+
+We have ***`r countFemales(sample2)` *** female presidents in this sample! Which will be always true, since we have used startified sampling.
+
+## Is this EPSEM?
+
+This method **is not EPSEM** because everyone does not have equal probability of selection into the sample. We utilize dispropotional sampling method forn this case to minimize the chance that small group of women might be missed out. 
+
+The chance for each man to get into a sample is:
+$$\frac{1}{size(strata(Male))} * 0.9 * size(sample) = \frac{9}{53} \approx 0.1698$$
+
+The chance for each woman to get into a sample is:
+$$\frac{1}{size(strata(Female))} * 0.1 * size(sample) = \frac{1}{3} \approx 0.33333$$
+As it can be seen, for men and women chances are different, so this is not EPSEM.
