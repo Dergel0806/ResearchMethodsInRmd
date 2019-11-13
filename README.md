@@ -1,4 +1,4 @@
-# Research_Methods_With_R
+# Research Methods In Rmd
 
 ## incompleteCounterbalancing
 
@@ -32,3 +32,13 @@ This [list](https://ethw.org/List_of_Presidents_of_the_Institute_of_Electrical_a
 them in a table.
 1. Create a sample of size 10 of IEEE presidents using *disproportional stratified sampling* technique
 (10% female, 90% male) and report them in a table.
+
+## ResearchValidity
+
+Based on `tippingArticle.pdf` theoretical analysis about 
+* design elements, 
+* extraneous confounding variables, 
+* internal validity, 
+* external validity,
+* random assignment strategies  
+was conducted.
