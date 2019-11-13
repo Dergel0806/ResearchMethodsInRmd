@@ -34,7 +34,7 @@ plotBarChart <- function(d,
   title <- title
   rownames(d) <- 'value'
   d <- data.frame(t(d))
-  ggplot(d, aes(x = rownames(d), y = value)) + 
+  ggplot(d, aes(x = factor(rownames(d), levels = rownames(d)), y = value)) + 
     theme_bw() + 
     theme(panel.grid.major.x = element_blank(), 
           panel.grid.minor = element_blank(), 
@@ -74,7 +74,7 @@ plotBarChart(medians)
 
 Interpret your graph, keeping in mind that the albums are ordered by release date.  
   
-As it can be seen, most of the albums had approximately same median song length (except for LIB and YSB which have bigger values).  
+As it can be seen, most of the albums had approximately same median song length (except for LIB and YSB which have bigger values). Beatles started making longer songs later in their career.  
 
 
 ## Range of song lengths
@@ -104,7 +104,7 @@ plotBarChart(ranges)
 Interpret your graph, keeping in mind that the albums are ordered by release date.  
   
 It can be seen that first one, last and SPL and TBS albums had much greater range of song lengths compared to other albums. LIB also stands out a bit.  
-In terms of time evolution we may assume that Beatles started from very ranged songs, but went down to smaller range of length. In the end they increased range of their songs again.
+In terms of time evolution we may assume that Beatles started from very unranged songs, but went up to bigger range of length later. 
 
 ## Quartiles of song length
 
@@ -180,7 +180,7 @@ plotBarChart(IQR)
 Interpret your graph, keeping in mind that the albums are ordered by release date.  
   
 As in range case, first one, last and SPL, LIB and TBS albums had much greater IQR of song lengths compared to other albums.
-Since IQR is also connected to range, our previous assumption is corroborated (in terms of time evolution we may assume that Beatles started from very ranged songs, but went down to smaller range of length, in the end they increased range of their songs again)  
+Since IQR is also connected to range, our previous assumption is corroborated (in terms of time evolution we may assume that Beatles started from very unranged songs, but went up to higher range of length).  
 
 ##  Lower and upper limits
 
