@@ -103,7 +103,7 @@ plotBarChart(ranges)
 
 Interpret your graph, keeping in mind that the albums are ordered by release date.  
   
-It can be seen that first one, last and SPL and TBS albums had much greater range of song lengths compared to other albums. LIB also stands out a bit.  
+It can be seen that last five albums had much greater range of song lengths compared to other albums. TBS and ABR stands out a lot.  
 In terms of time evolution we may assume that Beatles started from very unranged songs, but went up to bigger range of length later. 
 
 ## Quartiles of song length
@@ -179,7 +179,7 @@ plotBarChart(IQR)
 
 Interpret your graph, keeping in mind that the albums are ordered by release date.  
   
-As in range case, first one, last and SPL, LIB and TBS albums had much greater IQR of song lengths compared to other albums.
+As in range case, last albums had much greater IQR of song lengths compared to other albums.
 Since IQR is also connected to range, our previous assumption is corroborated (in terms of time evolution we may assume that Beatles started from very unranged songs, but went up to higher range of length).  
 
 ##  Lower and upper limits
